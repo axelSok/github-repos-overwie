@@ -1,0 +1,58 @@
+@mixin border-radius($radius: $border-radius) {
+    @if $enable-rounded {
+      border-radius: $radius;
+    }
+  }
+  
+  @mixin button-size($padding-y, $padding-x, $font-size, $border-radius) {
+    padding: $padding-y $padding-x;
+    font-size: $font-size-small;
+    @include border-radius($border-radius);
+  }
+  
+  @mixin rippleEffect($hoverColor, $rippleColor, $activeColor) {
+    &.app-button--ripple {
+      transition: $btn-ripple-effect-transition;
+      background-position: center;
+  
+      &:hover:enabled {
+        background: $hoverColor radial-gradient(circle, transparent 1%, $rippleColor 1%) center/15000%;
+        transition: $btn-ripple-effect-transition;
+      }
+  
+      &:active:enabled {
+        background-color: $activeColor;
+        background-size: 100%;
+        transition: background 0s;
+      }
+    }
+  }
+  
+  @mixin box-sizing($boxmodel) {
+    -webkit-box-sizing: $boxmodel;
+    -moz-box-sizing: $boxmodel;
+    box-sizing: $boxmodel;
+  }
+  
+  @mixin inblock() {
+    display: inline-block;
+    vertical-align: top;  
+  }
+  
+  @mixin tradeSmithIcon(){
+    [class^="ts-ico-"], [class*=" ts-ico-"]{
+      @content;
+    }
+  }
+  
+  @mixin ellipsis-on-overflow() {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  
+  @mixin widescreen-rule() {
+    max-width: 1920px;
+    width: 100%;
+    margin: 0 auto;
+  }
