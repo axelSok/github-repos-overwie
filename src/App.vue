@@ -1,8 +1,6 @@
 <template>
   <div id="app">
-    <section>
-      <Repositories class=""/>
-    </section>
+    <Repositories class="app-repositories"/>
   </div>
 </template>
 
@@ -18,12 +16,14 @@ export default {
 </script>
 
 <style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+html, body, #app {
+  height: 100%;
+}
+
+body {
+  font-family: Open Sans,sans-serif,Arial;
+  font-size: $font-size-base;
+  font-weight: $font-weight-normal;
+  margin: 0px;
 }
 </style>
