@@ -28,7 +28,7 @@ npm run lint
 ### Develop a small app that shows a list of all JavaScript repos on Github, sorted by number of stars.
 ```
 Requirements:
-* Listâ€™s columns: name, url (link), owner, forks, open issues, watchers.
+* List’s columns: name, url (link), owner, forks, open issues, watchers.
 * Should have pagination on scroll
 * Should show loader when data is being loaded.
 * Should look nice and have some styling
@@ -37,6 +37,6 @@ Requirements:
 
 Note:
 * You can use GitHub API for that (https://api.github.com)
-* Use Vue.js. Any flavor youâ€™re comfortable with (ts, jsx, scss, scoped, bem, etc).
+* Use Vue.js. Any flavor you’re comfortable with (ts, jsx, scss, scoped, bem, etc).
 * You can use any other libraries.
 * We expect you to do this at first attempt and spend no more than 4 hours.
