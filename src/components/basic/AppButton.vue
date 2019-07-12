@@ -25,7 +25,7 @@ export default {
     text-align: center;
     white-space: nowrap;
     user-select: none;
-    border: $btn-border-width solid transparent;
+    border: none;
     @include button-size($btn-padding-y, $btn-padding-x, $btn-font-size, $btn-border-radius-base);
     transition: $btn-transition;
     cursor: pointer;
@@ -34,13 +34,13 @@ export default {
     &:focus,
     &.focus {
       outline: none;
-      border: 1px solid $input-border-focus;
     }
 
     background-color: $btn-default-bg;
     border-color: $btn-default-border;
     color: $btn-default-color;
 
+    &.active,
     &:hover {
       color: $btn-default-hover-color;
       background-color: $btn-default-hover-bg;

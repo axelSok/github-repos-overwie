@@ -4,7 +4,12 @@
       <AppButton @click="onFirtsPageClick">&#10094;&#10094;</AppButton>
       <AppButton @click="onPrevPageClick">&#10094;</AppButton>
     </template>
-    <AppButton v-for="page in pages" :key="page" @click="onPageClick(page)">{{page}}</AppButton>
+    <AppButton v-for="page in pages"
+      :key="page"
+      :class="{ active: page === pageNumber }"
+      @click="onPageClick(page)">
+      {{page}}
+    </AppButton>
     <template v-if="pageCount > 3">
       <AppButton @click="onNextPageClick">&#10095;</AppButton>
       <AppButton @click="onLastPageClick">&#10095;&#10095;</AppButton>
