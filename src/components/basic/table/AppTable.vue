@@ -79,11 +79,12 @@ export default {
 
   &-body {
     tr:nth-of-type(2n) {
-      background-color: #eff4f5;
+      background-color: $gray-base;
     }
   }
 
   td {
+    max-width: 100px;
     padding: 8px;
     @include ellipsis-on-overflow();
   }
