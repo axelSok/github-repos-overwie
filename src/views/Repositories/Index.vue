@@ -5,7 +5,12 @@
         <Widget class="repositories__widget" :name="widgetName">
           <div slot="widget-body" class="repositories__widget-body">
             <Spinner v-if="isDataLoading" />
-            <AppTable v-else :items="repositories" />
+            <AppTable v-else
+              :sort-field="sortField"
+              :sort-by-ascending="sortByAscending"
+              :data="repositories"
+              :data-header="gridHeaderData"
+              @sorting-change="onSortingChange"/>
           </div>
           <div slot="widget-footer" class="repositories__widget-footer">
             <AppPagination
@@ -30,6 +35,70 @@ import Spinner from '@/components/Spinner'
 import Widget from '@/components/Widget'
 
 const repositoriesWidgetName = 'Repositories'
+
+const cellTypeEnums = {
+  string: 1,
+  number: 2,
+  link: 3
+}
+
+const getCellHeaderData = (propertyName, value) => {
+  switch (propertyName) {
+    case 'name':
+      return {
+        key: propertyName,
+        cellOrder: 1,
+        type: cellTypeEnums.string
+      }
+    case 'url':
+      return {
+        key: propertyName,
+        cellOrder: 2,
+        type: cellTypeEnums.link
+      }
+    case 'owner':
+      return {
+        key: propertyName,
+        cellOrder: 3,
+        type: cellTypeEnums.string
+      }
+    case 'stars':
+      return {
+        key: propertyName,
+        keyOrder: 'stars',
+        cellOrder: 4,
+        type: cellTypeEnums.number
+      }
+    case 'forks':
+      return {
+        key: propertyName,
+        keyOrder: 'forks',
+        cellOrder: 5,
+        type: cellTypeEnums.number
+      }
+    case 'issues':
+      return {
+        key: propertyName,
+        cellOrder: 6,
+        type: cellTypeEnums.number
+      }
+    case 'watchers':
+      return {
+        key: propertyName,
+        value,
+        cellOrder: 7,
+        type: cellTypeEnums.number
+      }
+    default:
+      return {
+        key: propertyName,
+        value,
+        cellOrder: -1,
+        type: cellTypeEnums.string
+      }
+  }
+}
+
 export default {
   name: 'Repositories',
   components: {
@@ -45,16 +114,38 @@ export default {
       totalRepositoriesCount: 0,
       countPerPage: 10,
       currentPage: 1,
+      sortByAscending: false,
+      sortField: 'stars',
       repositories: []
     }
   },
   async created () {
     await this.getPageData()
   },
+  computed: {
+    gridHeaderData () {
+      if (this.repositories.length) {
+        let rowHeaderData = []
+        for (let key of Object.keys(this.repositories[0])) {
+          rowHeaderData.push(getCellHeaderData(key, this.repositories[0][key]))
+        }
+        return rowHeaderData
+      }
+      return []
+    },
+    queryParam () {
+      return {
+        page: this.currentPage,
+        countPerPage: this.countPerPage,
+        sortField: this.sortField,
+        sortDirection: this.sortByAscending ? 'asc' : 'desc'
+      }
+    }
+  },
   methods: {
-    async getRepositories (page, countPerPage) {
+    async getRepositories (queryParam) {
       try {
-        let response = await api.repositories.get.query(page, countPerPage)
+        let response = await api.repositories.get.query(queryParam)
         return response.data
       } catch (ex) {
         return []
@@ -73,10 +164,7 @@ export default {
     },
     async getPageData () {
       this.isDataLoading = true
-      let repositoriesData = await this.getRepositories(
-        this.currentPage,
-        this.countPerPage
-      )
+      let repositoriesData = await this.getRepositories(this.queryParam)
       let data = await Promise.all(
         repositoriesData.items.map(async repo => {
           let repoDetails = await this.getRepositoryDetails(
@@ -96,11 +184,18 @@ export default {
         })
       )
       this.repositories = data
-      this.totalRepositoriesCount = repositoriesData.total_count
+      // TODO: must be like 'repositoriesData.total_count'
+      // but error from github API - Only the first 1000 search results are available
+      this.totalRepositoriesCount = 1000
       this.isDataLoading = false
     },
     onChanePage (pageNumber) {
       this.currentPage = pageNumber
+      this.getPageData()
+    },
+    onSortingChange ({ sortField, sortByAscending }) {
+      this.sortField = sortField
+      this.sortByAscending = sortByAscending
       this.getPageData()
     }
   }
@@ -123,6 +218,10 @@ export default {
   &__column {
     flex-direction: row;
     width: 100%;
+  }
+
+  &__widget-body {
+    height: 355px;
   }
 
   &__widget-footer {

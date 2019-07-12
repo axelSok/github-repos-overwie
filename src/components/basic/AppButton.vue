@@ -54,7 +54,7 @@ export default {
     &:disabled,
     &[disabled] {
       cursor: $cursor-disabled;
-      opacity: 0.3;
+      opacity: 0.7;
 
       &:hover {
         color: $btn-default-color;
