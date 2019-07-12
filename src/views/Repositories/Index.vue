@@ -2,10 +2,13 @@
   <div class="repositories">
     <div class="repositories__row">
       <div class="repositories__column">
-        <Widget :name="widgetName">
-          <div slot="widget-body">
-            <AppTable v-if="repositories.length" :items="repositories"/>
-            <Spinner v-else=""/>
+        <Widget class="repositories__widget" :name="widgetName">
+          <div slot="widget-body" class="repositories__widget-body">
+            <AppTable v-if="repositories.length" :items="repositories" />
+            <Spinner v-else />
+          </div>
+          <div slot="widget-footer" class="repositories__widget-footer">
+            <AppPagination v-if="repositories.length" :model="pagination"/>
           </div>
         </Widget>
       </div>
@@ -16,6 +19,7 @@
 <script>
 import api from '@/api'
 import AppTable from '@/components/basic/table/AppTable'
+import AppPagination from '@/components/basic/AppPagination'
 import Spinner from '@/components/Spinner'
 import Widget from '@/components/Widget'
 
@@ -23,6 +27,7 @@ const repositoriesWidgetName = 'Repositories'
 export default {
   name: 'Repositories',
   components: {
+    AppPagination,
     AppTable,
     Spinner,
     Widget
@@ -31,6 +36,11 @@ export default {
     return {
       isDataLoading: false,
       widgetName: repositoriesWidgetName,
+      pagination: {
+        totalCount: 0,
+        countPerPage: 10,
+        pageNumber: 0
+      },
       repositories: []
     }
   },
@@ -79,6 +89,7 @@ export default {
         })
       )
       this.repositories = data
+      this.pagination.totalCount = repositoriesData.total_count
       this.isDataLoading = false
     }
   }
@@ -101,6 +112,12 @@ export default {
   &__column {
     flex-direction: row;
     width: 100%;
+  }
+
+  &__widget-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 </style>
