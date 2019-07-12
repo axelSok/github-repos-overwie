@@ -19,7 +19,9 @@
     <tbody class="table-body">
       <tr v-for="item in data" :key="item.id">
         <td v-for="headerItem in dataHeader"
-        :key="`${headerItem.key}-${item.id}`">{{ item[headerItem.key] }}</td>
+        :key="`${headerItem.key}-${item.id}`">
+        {{ item[headerItem.key] }}
+        </td>
       </tr>
     </tbody>
   </table>
@@ -79,7 +81,7 @@ export default {
 
   &-body {
     tr:nth-of-type(2n) {
-      background-color: $gray-base;
+      background-color: $gray;
     }
   }
 

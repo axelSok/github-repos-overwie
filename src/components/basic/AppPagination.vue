@@ -32,6 +32,10 @@ export default {
     totalCount: {
       type: Number,
       required: true
+    },
+    buttonsCount: {
+      type: Number,
+      default: defaultMiddleButtonsCount
     }
   },
   components: {
@@ -42,13 +46,33 @@ export default {
       return Math.floor(this.totalCount / this.perPageCount)
     },
     pages () {
-      if (this.currentPage === 1) {
-        return [this.currentPage, this.currentPage + 1, this.currentPage + 2]
-      } else if (this.currentPage === this.pageCount) {
-        return [this.pageCount - 2, this.pageCount - 1, this.pageCount]
+      let pages = []
+      let offset = parseInt(this.buttonsCount / 2)
+      let minPage = this.currentPage - offset
+      minPage = minPage || 1
+
+      if (this.buttonsCount % 2) {
+        for (let i = minPage; i <= minPage + this.buttonsCount - 1; i++) {
+          pages.push(i)
+        }
       } else {
-        return [this.currentPage - 1, this.currentPage, this.currentPage + 1]
+        for (let i = minPage; i <= minPage + this.buttonsCount - 1; i++) {
+          pages.push(i)
+        }
       }
+
+      if (this.currentPage === 1) {
+        pages = []
+        for (let i = 1; i <= this.buttonsCount; i++) {
+          pages.push(i)
+        }
+      } else if (this.currentPage === this.pageCount) {
+        pages = []
+        for (let i = this.pageCount - this.buttonsCount + 1; i <= this.pageCount; i++) {
+          pages.push(i)
+        }
+      }
+      return pages
     },
     isDisabledNextButton () {
       return this.currentPage === this.pageCount
