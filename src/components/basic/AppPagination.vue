@@ -16,6 +16,8 @@
 <script>
 import AppButton from '@/components/basic/AppButton'
 
+const defaultMiddleButtonsCount = 3
+
 export default {
   name: 'AppPagination',
   props: {

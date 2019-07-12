@@ -29,7 +29,7 @@
 
 <script>
 import api from '@/api'
-import AppTable from '@/components/basic/table/AppTable'
+import AppTable from '@/components/basic/AppTable'
 import AppPagination from '@/components/basic/AppPagination'
 import Spinner from '@/components/Spinner'
 import Widget from '@/components/Widget'
