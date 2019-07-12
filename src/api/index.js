@@ -24,8 +24,8 @@ axios.interceptors.response.use(responseHandler, responseErrorHandler)
 export default {
   repositories: {
     get: {
-      query (params) {
-        return axiosGet(`search/repositories?q=language:javascript&page=1&per_page=10&sort=stars&order=asc`)
+      query (pageNumber, countPerPage) {
+        return axiosGet(`search/repositories?q=language:javascript&page=${pageNumber}&per_page=${countPerPage}&sort=stars&order=asc`)
       },
       details ({ ownerName, repoName }) {
         return axiosGet(`repos/${ownerName}/${repoName}`)

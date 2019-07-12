@@ -4,11 +4,17 @@
       <div class="repositories__column">
         <Widget class="repositories__widget" :name="widgetName">
           <div slot="widget-body" class="repositories__widget-body">
-            <AppTable v-if="repositories.length" :items="repositories" />
-            <Spinner v-else />
+            <Spinner v-if="isDataLoading" />
+            <AppTable v-else :items="repositories" />
           </div>
           <div slot="widget-footer" class="repositories__widget-footer">
-            <AppPagination v-if="repositories.length" :model="pagination"/>
+            <AppPagination
+              v-if="repositories.length"
+              :total-count="totalRepositoriesCount"
+              :per-page-count="countPerPage"
+              :current-page="currentPage"
+              @change-page="onChanePage"
+            />
           </div>
         </Widget>
       </div>
@@ -36,11 +42,9 @@ export default {
     return {
       isDataLoading: false,
       widgetName: repositoriesWidgetName,
-      pagination: {
-        totalCount: 0,
-        countPerPage: 10,
-        pageNumber: 0
-      },
+      totalRepositoriesCount: 0,
+      countPerPage: 10,
+      currentPage: 1,
       repositories: []
     }
   },
@@ -48,9 +52,9 @@ export default {
     await this.getPageData()
   },
   methods: {
-    async getRepositories () {
+    async getRepositories (page, countPerPage) {
       try {
-        let response = await api.repositories.get.query()
+        let response = await api.repositories.get.query(page, countPerPage)
         return response.data
       } catch (ex) {
         return []
@@ -69,7 +73,10 @@ export default {
     },
     async getPageData () {
       this.isDataLoading = true
-      let repositoriesData = await this.getRepositories()
+      let repositoriesData = await this.getRepositories(
+        this.currentPage,
+        this.countPerPage
+      )
       let data = await Promise.all(
         repositoriesData.items.map(async repo => {
           let repoDetails = await this.getRepositoryDetails(
@@ -89,8 +96,12 @@ export default {
         })
       )
       this.repositories = data
-      this.pagination.totalCount = repositoriesData.total_count
+      this.totalRepositoriesCount = repositoriesData.total_count
       this.isDataLoading = false
+    },
+    onChanePage (pageNumber) {
+      this.currentPage = pageNumber
+      this.getPageData()
     }
   }
 }

@@ -36,7 +36,7 @@ export default {
 
   &__header,
   &__footer {
-    background-color: $text-color;
+    background-color: #34495e;
     padding: 15px 20px;
   }
 

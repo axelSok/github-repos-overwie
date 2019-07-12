@@ -1,12 +1,14 @@
 <template>
   <div class="btn-group">
-    <AppButton>&#10094;&#10094;</AppButton>
-    <AppButton>&#10094;</AppButton>
-    <AppButton>1</AppButton>
-    <AppButton>2</AppButton>
-    <AppButton>3</AppButton>
-    <AppButton>&#10095;</AppButton>
-    <AppButton>&#10095;&#10095;</AppButton>
+    <template v-if="pageCount > 3">
+      <AppButton @click="onFirtsPageClick">&#10094;&#10094;</AppButton>
+      <AppButton @click="onPrevPageClick">&#10094;</AppButton>
+    </template>
+    <AppButton v-for="page in pages" :key="page" @click="onPageClick(page)">{{page}}</AppButton>
+    <template v-if="pageCount > 3">
+      <AppButton @click="onNextPageClick">&#10095;</AppButton>
+      <AppButton @click="onLastPageClick">&#10095;&#10095;</AppButton>
+    </template>
   </div>
 </template>
 
@@ -16,9 +18,22 @@ import AppButton from '@/components/basic/AppButton'
 export default {
   name: 'AppPagination',
   props: {
-    model: {
-      type: Object,
+    currentPage: {
+      type: Number,
       required: true
+    },
+    perPageCount: {
+      type: Number,
+      required: true
+    },
+    totalCount: {
+      type: Number,
+      required: true
+    }
+  },
+  data () {
+    return {
+      pageNumber: this.currentPage
     }
   },
   components: {
@@ -26,9 +41,45 @@ export default {
   },
   computed: {
     pageCount () {
-      let pageCount = Math.floor(this.model.totalCount / this.model.countPerPage)
-      console.log(pageCount)
-      return pageCount
+      return Math.floor(this.totalCount / this.perPageCount)
+    },
+    pages () {
+      if (this.pageNumber === 1) {
+        return [this.pageNumber, this.pageNumber + 1, this.pageNumber + 2]
+      } else if (this.pageNumber === this.pageCount) {
+        return [this.pageCount - 2, this.pageCount - 1, this.pageCount]
+      } else {
+        return [this.pageNumber - 1, this.pageNumber, this.pageNumber + 1]
+      }
+    }
+  },
+  methods: {
+    emitPageChange () {
+      this.$emit('change-page', this.pageNumber)
+    },
+    onFirtsPageClick () {
+      this.pageNumber = 1
+      this.emitPageChange()
+    },
+    onPrevPageClick () {
+      if (this.pageNumber !== 1) {
+        this.pageNumber -= 1
+        this.emitPageChange()
+      }
+    },
+    onPageClick (page) {
+      this.pageNumber = page
+      this.emitPageChange()
+    },
+    onNextPageClick () {
+      if (this.pageNumber !== this.pageCount) {
+        this.pageNumber += 1
+        this.emitPageChange()
+      }
+    },
+    onLastPageClick () {
+      this.pageNumber = this.pageCount
+      this.emitPageChange()
     }
   }
 }
