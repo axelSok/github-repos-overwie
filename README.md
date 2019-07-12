@@ -18,14 +18,8 @@ Note:
 * You can use any other libraries.
 * We expect you to do this at first attempt and spend no more than 4 hours.
 
-```
 Project setup - npm install
-```
 Compiles and hot-reloads for development - npm run serve
-```
 Compiles and minifies for production - npm run build
-```
 Run your tests - npm run test (not yet implemented)
-```
 Lints and fixes files - npm run lint
-```
