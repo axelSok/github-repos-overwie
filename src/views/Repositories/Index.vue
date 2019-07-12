@@ -3,8 +3,9 @@
     <div class="repositories__row">
       <div class="repositories__column">
         <Widget :name="widgetName">
-          <div slot="widget-body" v-if="repositories.length">
-            <AppTable :items="repositories"/>
+          <div slot="widget-body">
+            <AppTable v-if="repositories.length" :items="repositories"/>
+            <Spinner v-else=""/>
           </div>
         </Widget>
       </div>
@@ -15,18 +16,20 @@
 <script>
 import api from '@/api'
 import AppTable from '@/components/basic/table/AppTable'
+import Spinner from '@/components/Spinner'
 import Widget from '@/components/Widget'
 
 const repositoriesWidgetName = 'Repositories'
-
 export default {
   name: 'Repositories',
   components: {
     AppTable,
+    Spinner,
     Widget
   },
   data () {
     return {
+      isDataLoading: false,
       widgetName: repositoriesWidgetName,
       repositories: []
     }
@@ -55,10 +58,11 @@ export default {
       }
     },
     async getPageData () {
+      this.isDataLoading = true
       let repositoriesData = await this.getRepositories()
       let data = await Promise.all(
         repositoriesData.items.map(async repo => {
-          let response = await this.getRepositoryDetails(
+          let repoDetails = await this.getRepositoryDetails(
             repo.owner.login,
             repo.name
           )
@@ -70,11 +74,12 @@ export default {
             stars: repo.stargazers_count,
             forks: repo.forks,
             issues: repo.open_issues_count,
-            watchers: response.subscribers_count
+            watchers: repoDetails.subscribers_count
           }
         })
       )
       this.repositories = data
+      this.isDataLoading = false
     }
   }
 }
